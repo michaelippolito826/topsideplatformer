@@ -25,7 +25,7 @@ var Clarity = function () {
     this.alert_errors   = false;
     this.log_info       = true;
     this.tile_size      = 16;
-    this.limit_viewport = false;
+    this.limit_viewport = true;
     this.jump_switch    = 0;
     
     this.viewport = {
@@ -86,6 +86,9 @@ Clarity.prototype.keydown = function (e) {
     var _this = this;
 
     switch (e.keyCode) {
+    case 32:
+        _this.key.switch_view = true;
+        break;
     case 37:
         _this.key.left = true;
         break;
@@ -106,6 +109,9 @@ Clarity.prototype.keyup = function (e) {
     var _this = this;
 
     switch (e.keyCode) {
+    case 32:
+        _this.key.switch_view = false;
+        break;
     case 37:
         _this.key.left = false;
         break;
@@ -121,7 +127,7 @@ Clarity.prototype.keyup = function (e) {
     }
 };
 
-Clarity.prototype.load_map = function (map, side) {
+Clarity.prototype.load_map = function (map, map_angle) {
 
     if (typeof map      === 'undefined'
      || typeof map.data === 'undefined'
@@ -132,8 +138,9 @@ Clarity.prototype.load_map = function (map, side) {
         return false;
     }
 
-    alert(side);
-	
+    angle_label = document.getElementById("angle");
+    angle_label.innerHTML = map_angle.toUpperCase();
+
     this.current_map = map;
 
     this.current_map.background = map.background || '#333';
@@ -425,6 +432,7 @@ Clarity.prototype.move_player = function () {
 
 Clarity.prototype.update_player = function () {
 
+  if (this.current_map.map_angle === 'side'){
     if (this.key.left) {
 
         if (this.player.vel.x > -this.current_map.vel_limit.x)
@@ -452,7 +460,45 @@ Clarity.prototype.update_player = function () {
             this.player.vel.y += this.current_map.movement_speed.down;
     }
 
+    if (this.key.switch_view) {
+        this.load_map(map_top, map_top.map_angle);
+    }
+
     this.move_player();
+  }
+
+  if (this.current_map.map_angle === 'top'){
+    if (this.key.left) {
+
+        if (this.player.vel.x > -this.current_map.vel_limit.x)
+            this.player.vel.x -= this.current_map.movement_speed.left;
+    }
+
+    if (this.key.up) {
+
+        if (this.player.vel.y > -this.current_map.vel_limit.y)
+            this.player.vel.y -= this.current_map.movement_speed.up;
+    }
+
+    if (this.key.right) {
+
+        if (this.player.vel.x < this.current_map.vel_limit.x)
+            this.player.vel.x += this.current_map.movement_speed.left;
+    }
+    
+    if (this.key.down) {
+
+        if (this.player.vel.y < this.current_map.vel_limit.y)
+            this.player.vel.y += this.current_map.movement_speed.down;
+    }
+
+    if (this.key.switch_view) {
+        this.load_map(map_side, map_side.map_angle);
+    }
+
+    this.move_player();
+  }
+	
 };
 
 Clarity.prototype.draw_player = function (context) {
@@ -478,8 +524,8 @@ Clarity.prototype.update = function () {
 };
 
 Clarity.prototype.draw = function (context) {
-
     this.draw_map(context, false);
     this.draw_player(context);
 };
+
 } catch(e){alert(e.stack)}
