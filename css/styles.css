@@ -7,27 +7,25 @@ body {
 	background: #f2f2f2;
 }
 
-#canvas {
-	display: block;
-	margin: 40px auto 20px;
-	border: 1px solid #333;
 
+#canvas {
+
+	margin: 40px 400px 20px;
+	border: 1px solid #333;
 	-webkit-box-shadow: 0 0 16px 2px rgba(0,0,0,0.8);
 	box-shadow: 0 0 16px 2px rgba(0,0,0,0.8);
-
-	//transform: rotate3d(1, 0, 0, 90deg);
 }
 
 #top_canvas {
-	display: block;
+
 	margin: 40px auto 20px;
 	border: 1px solid #333;
 
 	-webkit-box-shadow: 0 0 16px 2px rgba(0,0,0,0.8);
 	box-shadow: 0 0 16px 2px rgba(0,0,0,0.8);
-
-	//transform: rotate3d(1, 0, 0, 90deg);
 }
+
+
 
 #angle {
 	font-family: Helvetica, Arial, sans-serif;
@@ -54,36 +52,3 @@ label {
 	margin: 0 auto;
 	display: block;
 }
-
-@-webkit-keyframes spincube {
-    from,to  { -webkit-transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-    83%      { -webkit-transform: rotateX(90deg);                            }
-  }
-
-  #spinner {
-    -webkit-animation-name: spincube;
-    -webkit-animation-timing-function: ease-in-out;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-duration: 12s;
-    -webkit-transform-style: preserve-3d;
-    -webkit-transform-origin: 60px 60px 0;
-  }
-
- #spinner div {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border: 1px solid #ccc;
-    background: rgba(255,255,255,0.8);
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-    text-align: center;
-    line-height: 120px;
-    font-size: 100px;
-  }
-
-  #spinner .face { -webkit-transform: translateZ(60px);                                }
-  #spinner .face { -webkit-transform: rotateY(90deg) translateZ(60px);                 }
-  #spinner .face { -webkit-transform: rotateY(90deg) rotateX(90deg) translateZ(60px);  }
-  #spinner .face { -webkit-transform: rotateY(180deg) rotateZ(90deg) translateZ(60px); }
-  #spinner .face { -webkit-transform: rotateY(-90deg) rotateZ(90deg) translateZ(60px); }
-  #spinner .face { -webkit-transform: rotateX(-90deg) translateZ(60px);                }
