@@ -11,14 +11,17 @@
 
 <body>
     <div id="angle">Side</div>
-    <div id="spinner" style="-webkit-transform-origin: 180px 0 0;">
-    <canvas class="face" id="canvas"></canvas>
-    </div>
 
-    <canvas id="top_canvas"></canvas>
+
+    <canvas id="canvas"></canvas>
+    <!-- <canvas id="top_canvas"></canvas> -->
+
 
     <label for="viewport">
         <input type="checkbox" id="viewport" onclick="game.limit_viewport=this.checked;" checked/> Confine viewport to map</label>
+
+    <div id="debugx"></div>
+    <div id="debugy"></div>
 
     <script type="text/javascript">
 	try{
@@ -35,14 +38,14 @@
         var canvas = document.getElementById('canvas'),
             ctx    = canvas.getContext('2d');
 
-        var top_canvas = document.getElementById('top_canvas'),
-            top_ctx    = top_canvas.getContext('2d');
+        //var top_canvas = document.getElementById('top_canvas'),
+            //top_ctx    = top_canvas.getContext('2d');
 
         canvas.width = 600;
         canvas.height = 600;
 
-	top_canvas.width = 600;
-        top_canvas.height = 600;
+	//top_canvas.width = 400;
+        //top_canvas.height = 400;
         
         /* Customisable map data */
 
@@ -71,7 +74,7 @@
             keys: [
                 {id: 0, colour: '#333', solid: 0},
                 {id: 1, colour: '#888', solid: 0},
-                {id: 2,colour: '#555',solid: 1,bounce: 0.4},
+                {id: 2,colour: '#555',solid: 1,bounce: 0.1},
                 {id: 3,colour: 'rgba(121, 220, 242, 0.4)',friction: {x: 0.9,y: 0.9},gravity: {x: 0,y: 0.1},jump: 1,fore: 1},
                 {id: 4,colour: '#777',jump: 1},
                 {id: 5,colour: '#E373FA',solid: 1,bounce: 1.1},
@@ -111,14 +114,14 @@
                 [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
                 [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
                 [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], 
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
-                [2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2],
-                [2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2],
-                [2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2],
-                [2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2],
-                [2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 1, 2],
-                [2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
                 
@@ -194,7 +197,7 @@
                 {id: 3,colour: 'rgba(121, 220, 242, 0.4)',friction: {x: 0.9,y: 0.9},gravity: {x: 0,y: 0.1},jump: 1,fore: 1},
                 {id: 4,colour: '#777',jump: 1},
                 {id: 5,colour: '#E373FA',solid: 1,bounce: 1.1},
-                {id: 6,colour: '#666',solid: 1,bounce: 0},
+                {id: 6,colour: '#666',solid: 0,bounce: 0,friction: {x: 0.9,y: 0.9}},
                 {id: 7,colour: '#73C6FA',solid: 0,script: 'change_colour'},
                 {id: 8,colour: '#FADF73',solid: 0,script: 'next_level'},
                 {id: 9,colour: '#C93232',solid: 0,script: 'death'},
@@ -205,30 +208,30 @@
             /* An array representing the map tiles. Each number corresponds to a key */
             data: [
                 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
-                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
+                [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 2],
                 [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             ],
         
@@ -259,7 +262,7 @@
         
             player: {
                 x: 10,
-                y: 15,
+                y: 12.5,
                 colour: '#000000'
             },
             
@@ -270,14 +273,123 @@
                 /* you could load a new map variable here */
                 next_level: 'this.load_map(map_side, map_side.map_angle);',
                 death: 'alert("You died!");this.load_map(map_top);',
-                unlock: 'this.current_map.keys[10].solid = 0;this.current_map.keys[10].colour = "#888";'
+                unlock: 'map_side.keys[10].solid = 0;map_side.keys[10].colour = "#888";'
+		
             }
         };
 
+	var map_top_sub = {
+	    map_angle: 'top',
 
+            tile_size: 16,
         
+            /*
+            
+            Key vairables:
+            
+            id       [required] - an integer that corresponds with a tile in the data array.
+            colour   [required] - any javascript compatible colour variable.
+            solid    [optional] - whether the tile is solid or not, defaults to false.
+            bounce   [optional] - how much velocity is preserved upon hitting the tile, 0.5 is half.
+            jump     [optional] - whether the player can jump while over the tile, defaults to false.
+            friction [optional] - friction of the tile, must have X and Y values (e.g {x:0.5, y:0.5}).
+            gravity  [optional] - gravity of the tile, must have X and Y values (e.g {x:0.5, y:0.5}).
+            fore     [optional] - whether the tile is drawn in front of the player, defaults to false.
+            script   [optional] - refers to a script in the scripts section, executed if it is touched.
+            
+            */
+            
+            keys: [
+                {id: 0, colour: '#333', solid: 0},
+                {id: 1, colour: '#888', solid: 0, friction: {x: 0.9,y: 0.9}},
+                {id: 2,colour: '#555',solid: 1,bounce: 0},
+                {id: 3,colour: 'rgba(121, 220, 242, 0.4)',friction: {x: 0.9,y: 0.9},gravity: {x: 0,y: 0.1},jump: 1,fore: 1},
+                {id: 4,colour: '#777',jump: 1},
+                {id: 5,colour: '#E373FA',solid: 1,bounce: 1.1},
+                {id: 6,colour: '#666',solid: 0,bounce: 0,friction: {x: 0.9,y: 0.9}},
+                {id: 7,colour: '#73C6FA',solid: 0,script: 'change_colour'},
+                {id: 8,colour: '#FADF73',solid: 0,script: 'next_level'},
+                {id: 9,colour: '#C93232',solid: 0,script: 'death'},
+                {id: 10,colour: '#555',solid: 1},
+                {id: 11,colour: '#0FF',solid: 1,script: 'unlock'}
+            ],
+        
+            /* An array representing the map tiles. Each number corresponds to a key */
+            data: [
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 11, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2],
+                [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            ],
+        
+            /* Default gravity of the map */
+            
+            gravity: {
+                x: 0,
+                y: 0
+            },
+            
+            /* Velocity limits */
+        
+            vel_limit: {
+                x: 6,
+                y: 6
+            },
+        
+            /* Movement speed when the key is pressed */
+            
+            movement_speed: {
+                up: 0.5,
+    		down: 0.5,
+                left: 0.5,
+                right: 0.5
+            },
+            
+            /* The coordinates at which the player spawns and the colour of the player */
+        
+            player: {
+                x: 10,
+                y: 12.5,
+                colour: '#000000'
+            },
+            
+            /* scripts refered to by the "script" variable in the tile keys */
+        
+            scripts: {
+                change_colour: 'this.player.colour = "#"+(Math.random()*0xFFFFFF<<0).toString(16);',
+                /* you could load a new map variable here */
+                next_level: 'this.load_map(map_side, map_side.map_angle);',
+                death: 'alert("You died!");this.load_map(map_top);',
+                unlock: 'map_side.keys[10].solid = 0;map_side.keys[10].colour = "#888";'
+		
+            }
+        };
+
         /* Setup of the engine */
 	var map = map_side;
+        map.player = {x:10, y:10, colour: '#000000'} 
         var map_angle = map.map_angle;
         var game = new Clarity();
         game.set_viewport(canvas.width, canvas.height);
@@ -289,17 +401,23 @@
 
         var Loop = function() {
 
+	    debug_divx = document.getElementById("debugx");
+	    debug_divx.innerHTML = game.get_player_location()[0];
+	    
+  	    debug_divy = document.getElementById("debugy");
+	    debug_divy.innerHTML = game.get_player_location()[1];
+
             ctx.fillStyle = '#333';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            top_ctx.fillStyle = '#333';
-            top_ctx.fillRect(0, 0, canvas.width, canvas.height);
+            //top_ctx.fillStyle = '#333';
+            //top_ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             game.update();
             game.draw(ctx);
 
-	    game.update();
-            game.draw(top_ctx);
+	    //game.update();
+            //game.draw(top_ctx);
 
             window.requestAnimFrame(Loop);
         };
